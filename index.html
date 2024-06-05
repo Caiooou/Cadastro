@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Login</title>
+</head>  
+<body>
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form>
+                <h1>Sua Conta</h1>
+                <button type="button" id="ver">Ver</button>
+                <button type="button" id="alterar">Alterar</button>
+                <button type="button" id="deletar">Deletar</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form>
+                <h1>Fazer Cadastro</h1>
+                <div class="social-icons">
+                </div>
+                <input type="email" placeholder="Email" id="rEmail">
+                <input type="password" placeholder="Senha" id="rPassword">
+                <button type="button" id="registrar">Registrar</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Ola, Amigo!</h1>
+                    <p>Faça seu cadastro para testar todas funcionalidades do site</p>
+                    <button class="hidden" id="login">Cadastrar</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Ola, Amigo!</h1>
+                    <p>Altere, delete ou veja todas informações relacionadas a sua conta</p>
+                    <button class="hidden" id="register">Ver</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        const firebaseConfig = {
+          apiKey: "AIzaSyBsxZINlGkCYDklWTUP4-0QB6P3yTNf61w",
+          authDomain: "prova-217d6.firebaseapp.com",
+          databaseURL: "https://prova-217d6-default-rtdb.firebaseio.com",
+          projectId: "prova-217d6",
+          storageBucket: "prova-217d6.appspot.com",
+          messagingSenderId: "242543109163",
+          appId: "1:242543109163:web:cc7e80d52ba82cc6f9366e",
+          measurementId: "G-7VZJ82WT0Z"
+        };
+      
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+
+        import {getDatabase, ref, child, get, set, update, remove} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const db = getDatabase();
+
+        let rEmail = document.getElementById('rEmail');
+        let rPassword = document.getElementById('rPassword');
+
+        let ver = document.getElementById('ver');
+        let registrar = document.getElementById('registrar');
+        let alterar = document.getElementById('alterar');
+        let deletar = document.getElementById('deletar');
+
+        function AddData(){
+            set(ref(db, 'usuarios/'),{
+                info: {email: rEmail.value, senha: rPassword.value}
+            }).then(()=>{
+                alert("CADASTRADO COM SUCESSO!!!");
+            }).catch((error)=>{
+                alert("DEU ERRO");
+                console.log(error);
+            })
+        }
+
+        function RetData(){
+    const dbRef = ref(db);
+
+    get(child(dbRef, 'usuarios/')).then((snapshot)=>{
+        if(snapshot.exists()){
+            const data = snapshot.val();
+            console.log("Email:", data.info.email);
+            console.log("Senha:", data.info.senha);
+        }
+        else{
+            alert("Não há dados para mostrar")
+        }
+    }).catch(error => {
+        alert("DEU ERRO");
+        console.log(error);
+    });
+}
+
+
+        function UpdateData(){
+            update(ref(db, 'usuarios/'),{
+                info: {email: rEmail.value, senha: rPassword.value}
+            }).then(()=>{
+                alert("ATUALIZADO COM SUCESSO!!!");
+            }).catch((error)=>{
+                alert("DEU ERRO");
+                console.log(error);
+            })
+        }
+
+        function DeleteData(){
+            remove(ref(db, 'usuarios/')).then(()=>{
+                alert("DELETADO COM SUCESSO!!!");
+            }).catch((error)=>{
+                alert("DEU ERRO");
+                console.log(error);
+            })
+        }
+        registrar.addEventListener('click', AddData)
+        ver.addEventListener('click', RetData)
+        alterar.addEventListener('click', UpdateData)
+        deletar.addEventListener('click', DeleteData)
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
